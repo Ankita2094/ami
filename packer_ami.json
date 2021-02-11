@@ -1,0 +1,61 @@
+{
+    "variables": {
+      "aws_access_key": "{{env `aws_access_key`}}",
+      "aws_secret_key": "{{env `aws_secret_key`}}",
+      "aws_region": "{{env `aws_region`}}",
+      "subnet_id": "{{env `subnet_id`}}",
+      "source_ami": "ami-0817d428a6fb68645",
+      "ssh_username": "ubuntu"
+    },
+    "builders": [
+      {
+        "type": "amazon-ebs",
+        "access_key": "{{user `aws_access_key`}}",
+        "secret_key": "{{user `aws_secret_key`}}",
+        "region": "{{user `aws_region`}}",
+        "instance_type": "t2.micro",
+        "ssh_username": "{{user `ssh_username`}}",
+        "subnet_id": "{{user `subnet_id`}}",
+        "source_ami": "{{user `source_ami`}}",
+        "ami_name": "csye6225_tiwariank-{{isotime \"2006-01-02-1504\"}}",
+        "ami_description" : "AMI for CSYE6225_tiwariank",
+        "ami_users": ["030854152610"] ,
+        "launch_block_device_mappings": [
+            {
+                "device_name": "/dev/sda1",
+                "volume_size": 8,
+                "volume_type": "gp2",
+                "delete_on_termination": true
+            }
+        ]
+        
+        
+        
+      }
+    ],
+    "provisioners": [
+      
+      {
+        "type": "shell",
+        "inline":[
+          "sleep 30",
+    "sudo apt-get update -y",
+   "curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -",
+   "sudo apt-get install -y nodejs",
+   "sudo apt-get install -y zip unzip",
+   "sudo apt-get install -y ruby",
+   "sudo apt-get install -y wget",
+   "cd /home/ubuntu",
+   "wget https://aws-codedeploy-us-east-1.s3.us-east-1.amazonaws.com/latest/install",
+   "chmod +x ./install",
+   "sudo ./install auto",
+   "sudo service codedeploy-agent status",
+   "wget https://s3.amazonaws.com/amazoncloudwatch-agent/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb",
+   "sudo dpkg -i -E ./amazon-cloudwatch-agent.deb",
+   "rm amazon-cloudwatch-agent.deb"
+  
+  ]
+      }
+      
+    ]
+  }
